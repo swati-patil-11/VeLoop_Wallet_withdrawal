@@ -169,19 +169,20 @@ async function creditWallet({
   }
 
   return await withTransaction(async (session) => {
+    // Prepare $setOnInsert without the field being $inc'd to avoid MongoDB path conflict
+    const setOnInsert = { userId };
+    for (const prop of Object.values(CURRENCY_FIELD_MAP)) {
+      if (prop !== field) {
+        setOnInsert[prop] = 0;
+      }
+    }
+
     // Atomic update with upsert: $inc adds the amount
     const updatedWallet = await Wallet.findOneAndUpdate(
       { userId },
       {
         $inc: { [field]: validAmount, version: 1 },
-        $setOnInsert: {
-          userId,
-          ves: field === 'ves' ? 0 : 0,
-          sves: field === 'sves' ? 0 : 0,
-          gems: field === 'gems' ? 0 : 0,
-          tokens: field === 'tokens' ? 0 : 0,
-          spins: field === 'spins' ? 0 : 0
-        }
+        $setOnInsert: setOnInsert
       },
       { new: true, upsert: true, session }
     );

@@ -138,82 +138,107 @@ async function createWithdrawal({
   const maskedDetails = maskPayoutDetails(method, payoutDetails);
 
   // 6. Execute atomic deduction and withdrawal creation inside one transaction
-  const result = await withTransaction(async (session) => {
-    // Atomic conditional debit on user's VES balance
-    const debitResult = await walletService.debitWallet({
-      userId,
-      currency: CURRENCIES.VES,
-      amount: option.requiredAmount,
-      source: DEBIT_SOURCES.WITHDRAWAL,
-      referenceId: withdrawalId,
-      description: `Redemption for ${option.methodName} (INR ${option.payoutValue})`,
-      metadata: {
-        method,
-        optionId,
-        payoutAmount: option.payoutValue,
-        payoutCurrency: option.payoutCurrency
-      },
-      session
-    });
-
-    // Create immutable withdrawal record with status PENDING
-    const [withdrawal] = await Withdrawal.create(
-      [
-        {
-          withdrawalId,
-          userId,
+  let result;
+  try {
+    result = await withTransaction(async (session) => {
+      // Atomic conditional debit on user's VES balance
+      const debitResult = await walletService.debitWallet({
+        userId,
+        currency: CURRENCIES.VES,
+        amount: option.requiredAmount,
+        source: DEBIT_SOURCES.WITHDRAWAL,
+        referenceId: withdrawalId,
+        description: `Redemption for ${option.methodName} (INR ${option.payoutValue})`,
+        metadata: {
           method,
           optionId,
-          currency: CURRENCIES.VES,
-          currencyAmount: option.requiredAmount,
           payoutAmount: option.payoutValue,
-          payoutDetails: maskedDetails,
-          status: WITHDRAWAL_STATUS.PENDING,
-          transactionId: debitResult.transaction.transactionId,
-          idempotencyKey,
-          requestedAt: new Date(),
-          statusHistory: [
-            {
-              status: WITHDRAWAL_STATUS.PENDING,
-              at: new Date(),
-              by: userId,
-              note: 'Withdrawal requested'
-            }
-          ]
-        }
-      ],
-      { session }
-    );
+          payoutCurrency: option.payoutCurrency
+        },
+        session
+      });
 
-    // Create Audit Log
-    await AuditLog.create(
-      [
-        {
-          actorId: userId,
-          actorRole: user.role,
-          action: AUDIT_ACTIONS.WITHDRAWAL_CREATED,
-          targetUserId: userId,
-          targetType: 'WITHDRAWAL',
-          referenceId: withdrawalId,
-          metadata: {
+      // Create immutable withdrawal record with status PENDING
+      const [withdrawal] = await Withdrawal.create(
+        [
+          {
+            withdrawalId,
+            userId,
             method,
             optionId,
+            currency: CURRENCIES.VES,
             currencyAmount: option.requiredAmount,
             payoutAmount: option.payoutValue,
-            transactionId: debitResult.transaction.transactionId
-          },
-          ip,
-          userAgent
-        }
-      ],
-      { session }
-    );
+            payoutDetails: maskedDetails,
+            status: WITHDRAWAL_STATUS.PENDING,
+            transactionId: debitResult.transaction.transactionId,
+            idempotencyKey,
+            requestedAt: new Date(),
+            statusHistory: [
+              {
+                status: WITHDRAWAL_STATUS.PENDING,
+                at: new Date(),
+                by: userId,
+                note: 'Withdrawal requested'
+              }
+            ]
+          }
+        ],
+        { session }
+      );
 
-    return {
-      withdrawal,
-      wallet: debitResult.wallet
-    };
-  });
+      // Create Audit Log
+      await AuditLog.create(
+        [
+          {
+            actorId: userId,
+            actorRole: user.role,
+            action: AUDIT_ACTIONS.WITHDRAWAL_CREATED,
+            targetUserId: userId,
+            targetType: 'WITHDRAWAL',
+            referenceId: withdrawalId,
+            metadata: {
+              method,
+              optionId,
+              currencyAmount: option.requiredAmount,
+              payoutAmount: option.payoutValue,
+              transactionId: debitResult.transaction.transactionId
+            },
+            ip,
+            userAgent
+          }
+        ],
+        { session }
+      );
+
+      return {
+        withdrawal,
+        wallet: debitResult.wallet
+      };
+    });
+  } catch (err) {
+    // If a concurrent thread committed with this idempotency key in the interim,
+    // handle the duplicate gracefully by returning the winning thread's record
+    if (err.code === 11000) {
+      const concurrentWithdrawal = await Withdrawal.findOne({ userId, idempotencyKey });
+      if (concurrentWithdrawal) {
+        logger.info({ userId, idempotencyKey }, 'Concurrent idempotency race caught, returning winning record');
+        const wallet = await walletService.getWallet(userId);
+        return {
+          duplicate: true,
+          withdrawal: concurrentWithdrawal,
+          wallet: {
+            ves: wallet.ves,
+            sves: wallet.sves,
+            gems: wallet.gems,
+            tokens: wallet.tokens,
+            spins: wallet.spins
+          }
+        };
+      }
+    }
+    throw err;
+  }
 
   logger.info({ withdrawalId, userId, optionId }, 'Withdrawal created successfully');
 

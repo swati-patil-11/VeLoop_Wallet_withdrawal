@@ -11,9 +11,9 @@ const {
 const { ROLES, ACCOUNT_STATUS } = require('../config/constants');
 const logger = require('../utils/logger');
 
-const JWT_SECRET =
+const getJwtSecret = () =>
   process.env.JWT_SECRET || 'demo_jwt_secret_change_in_production_super_secure_key_12345';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const getJwtExpiresIn = () => process.env.JWT_EXPIRES_IN || '7d';
 
 /**
  * Generate JWT token for user
@@ -26,8 +26,8 @@ function generateToken(user) {
       email: user.email,
       role: user.role
     },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    getJwtSecret(),
+    { expiresIn: getJwtExpiresIn() }
   );
 }
 
