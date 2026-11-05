@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: veloop-rewards-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node src/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_BOOTSTRAP_EMAIL
+        value: admin@veloop.test
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        sync: false
+      - key: DAILY_WITHDRAWAL_CAP_VES
+        value: 200000
+      - key: MAX_WITHDRAWAL_ATTEMPTS_PER_HOUR
+        value: 5
+      - key: SEED_ALLOW_PROD
+        value: "false"
