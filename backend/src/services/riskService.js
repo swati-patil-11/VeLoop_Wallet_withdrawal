@@ -128,3 +128,4 @@ module.exports = {
   MAX_ATTEMPTS_PER_HOUR,
   DAILY_WITHDRAWAL_CAP_VES
 };
+

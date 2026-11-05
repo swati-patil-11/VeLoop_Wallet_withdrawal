@@ -128,3 +128,4 @@ sequenceDiagram
 | **Admin double-click on reject** | Conditional update matches `{ status: { $in: ['PENDING', 'PROCESSING'] } }`. Second call matches 0 docs. Unique partial index on `(referenceId, source)` also prevents duplicate refund. | Refund executed exactly once. User balance restored only once. |
 | **Tampered client request** | Zod `.strict()` schema detects extraneous fields (`amount`, `balance`). | Rejection with HTTP 400 before financial services are invoked. |
 | **Account suspended or flagged** | `riskService` intercept blocks request. | Account cannot initiate withdrawals; `SUSPICIOUS_ACTIVITY` audit log logged. |
+

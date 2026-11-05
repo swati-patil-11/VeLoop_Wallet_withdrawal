@@ -46,3 +46,4 @@ module.exports = {
   login,
   getMe
 };
+

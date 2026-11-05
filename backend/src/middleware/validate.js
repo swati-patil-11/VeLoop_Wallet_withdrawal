@@ -39,3 +39,4 @@ function validate({ body, query, params, headers } = {}) {
 }
 
 module.exports = { validate };
+

@@ -30,3 +30,4 @@ function mongoSanitize(req, res, next) {
 }
 
 module.exports = { mongoSanitize, sanitizeObject };
+

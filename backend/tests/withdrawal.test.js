@@ -320,3 +320,4 @@ describe('Withdrawals & Financial State Machine (Scenarios 2, 3, 4, 5, 6, 8, 9)'
     expect(resValid.body.wallet.ves).toBe(2600); // 5000 - 2400 = 2600
   });
 });
+

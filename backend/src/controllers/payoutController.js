@@ -12,6 +12,19 @@ async function getMethods(req, res, next) {
   }
 }
 
+async function getAllOptions(req, res, next) {
+  try {
+    const userId = req.user.userId;
+    const methodsWithdrawn = await payoutService.getAllOptionsGrouped(userId);
+    res.status(200).json({
+      success: true,
+      methods: methodsWithdrawn
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function getOptionsByMethod(req, res, next) {
   try {
     const { method } = req.params;
@@ -30,5 +43,7 @@ async function getOptionsByMethod(req, res, next) {
 
 module.exports = {
   getMethods,
+  getAllOptions,
   getOptionsByMethod
 };
+

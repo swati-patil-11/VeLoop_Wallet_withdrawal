@@ -32,3 +32,4 @@ router.get('/:id', authenticate, withdrawalController.getWithdrawalById);
 router.post('/:id/cancel', authenticate, withdrawalController.cancelWithdrawal);
 
 module.exports = router;
+

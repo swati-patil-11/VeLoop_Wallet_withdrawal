@@ -164,3 +164,4 @@ fi
 echo -e "\n${GREEN}======================================================${NC}"
 echo -e "${GREEN}   ALL SMOKE TESTS PASSED SUCCESSFULLY!               ${NC}"
 echo -e "${GREEN}======================================================${NC}"
+

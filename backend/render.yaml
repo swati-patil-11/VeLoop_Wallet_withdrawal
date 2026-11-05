@@ -30,3 +30,4 @@ services:
         value: 5
       - key: SEED_ALLOW_PROD
         value: "false"
+

@@ -124,3 +124,4 @@ The script verifies:
 6. Re-submit with same `Idempotency-Key` (asserts HTTP 200 with `duplicate: true`).
 7. Malicious tamper test with client-sent `amount` (asserts HTTP 400).
 8. Unauthorized admin access test (asserts HTTP 403).
+

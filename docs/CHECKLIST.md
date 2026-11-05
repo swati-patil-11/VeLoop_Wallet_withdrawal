@@ -91,3 +91,4 @@ Every item in this checklist has been independently implemented, tested, and ver
 - [x] **Docker & Compose**: `Dockerfile` for backend, `Dockerfile` for frontend with Nginx, `docker-compose.yml` with single-node MongoDB replica set (`rs0`).
 - [x] **Cloud Deployment Configs**: `render.yaml` for backend, `vercel.json` and `_redirects` for frontend SPA routing.
 - [x] **Post-deploy Smoke Script**: `scripts/smoke.sh` executable test suite.
+

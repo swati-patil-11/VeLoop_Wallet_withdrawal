@@ -167,10 +167,31 @@ async function updatePayoutOption(optionId, updateData, adminUserId, ip = 'unkno
   return existing;
 }
 
+/**
+ * Get all payout options grouped by method (Page 11 of specification)
+ */
+async function getAllOptionsGrouped(userId) {
+  const methods = await getMethods();
+  const grouped = [];
+  for (const m of methods) {
+    const methodData = await getOptionsByMethod(m.methodId, userId);
+    grouped.push({
+      method: m.methodId,
+      name: m.name,
+      description: m.description,
+      requiredFields: m.requiredFields,
+      options: methodData.options
+    });
+  }
+  return grouped;
+}
+
 module.exports = {
   getMethods,
   getOptionsByMethod,
+  getAllOptionsGrouped,
   getOptionById,
   updatePayoutOption,
   METHOD_DETAILS
 };
+

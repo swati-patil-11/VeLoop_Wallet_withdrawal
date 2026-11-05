@@ -251,3 +251,4 @@ Generic snapshot cache for non-withdrawal mutations.
 |------------|------|---------|---------|
 | `{ userId: 1, key: 1, endpoint: 1 }` | Compound Unique | | Prevents duplicate mutation replay |
 | `{ expiresAt: 1 }` | TTL | `expireAfterSeconds: 0` | Automatic document expiration |
+
