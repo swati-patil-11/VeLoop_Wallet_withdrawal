@@ -67,6 +67,71 @@ async function seed() {
       { $set: { userId: demo2.userId, ves: 5000, sves: 1000, gems: 20, tokens: 100, spins: 1 } },
       { upsert: true, new: true }
     );
+
+    // Opening ledger entries for demo2 so all wallets reconcile with 0 drift
+    await WalletTransaction.insertMany([
+      {
+        transactionId: uuidv4(),
+        userId: demo2.userId,
+        currency: CURRENCIES.VES,
+        type: TRANSACTION_TYPES.CREDIT,
+        amount: 5000,
+        balanceBefore: 0,
+        balanceAfter: 5000,
+        source: CREDIT_SOURCES.BALANCE_OPENING,
+        description: 'Opening Rewards Balance',
+        metadata: { demo: true }
+      },
+      {
+        transactionId: uuidv4(),
+        userId: demo2.userId,
+        currency: CURRENCIES.SVES,
+        type: TRANSACTION_TYPES.CREDIT,
+        amount: 1000,
+        balanceBefore: 0,
+        balanceAfter: 1000,
+        source: CREDIT_SOURCES.BALANCE_OPENING,
+        description: 'Opening Super VEs Balance',
+        metadata: { demo: true }
+      },
+      {
+        transactionId: uuidv4(),
+        userId: demo2.userId,
+        currency: CURRENCIES.GEMS,
+        type: TRANSACTION_TYPES.CREDIT,
+        amount: 20,
+        balanceBefore: 0,
+        balanceAfter: 20,
+        source: CREDIT_SOURCES.BALANCE_OPENING,
+        description: 'Opening Gems Balance',
+        metadata: { demo: true }
+      },
+      {
+        transactionId: uuidv4(),
+        userId: demo2.userId,
+        currency: CURRENCIES.TOKENS,
+        type: TRANSACTION_TYPES.CREDIT,
+        amount: 100,
+        balanceBefore: 0,
+        balanceAfter: 100,
+        source: CREDIT_SOURCES.BALANCE_OPENING,
+        description: 'Opening Tokens Balance',
+        metadata: { demo: true }
+      },
+      {
+        transactionId: uuidv4(),
+        userId: demo2.userId,
+        currency: CURRENCIES.SPINS,
+        type: TRANSACTION_TYPES.CREDIT,
+        amount: 1,
+        balanceBefore: 0,
+        balanceAfter: 1,
+        source: CREDIT_SOURCES.BALANCE_OPENING,
+        description: 'Opening Spins Balance',
+        metadata: { demo: true }
+      }
+    ]);
+
     logger.info({ email: demo2Email }, 'Created secondary demo user');
   }
 
