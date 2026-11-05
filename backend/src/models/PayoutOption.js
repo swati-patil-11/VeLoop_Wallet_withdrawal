@@ -93,3 +93,4 @@ payoutOptionSchema.index({ methodId: 1, active: 1, sortOrder: 1 });
 
 const PayoutOption = mongoose.model('PayoutOption', payoutOptionSchema);
 module.exports = PayoutOption;
+

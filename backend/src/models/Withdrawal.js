@@ -127,3 +127,4 @@ withdrawalSchema.index({ userId: 1, idempotencyKey: 1 }, { unique: true });
 
 const Withdrawal = mongoose.model('Withdrawal', withdrawalSchema);
 module.exports = Withdrawal;
+

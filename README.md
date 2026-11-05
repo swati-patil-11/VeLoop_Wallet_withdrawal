@@ -23,3 +23,4 @@ The system follows a strict backend-driven financial paradigm:
 - **Backend owns all financial logic**: The client only sends abstract identifiers (`method`, `optionId`), validated payout recipient information (e.g., `upiId`), and a unique `Idempotency-Key` header. Clients are never permitted to supply amounts, currencies, balances, or required VEs.
 - **Atomic Operations**: All wallet balance modifications and ledger transactions occur inside a single MongoDB ACID transaction using conditional atomic queries (`findOneAndUpdate` with `$gte`).
 - **Immutable Ledger**: Transactions are strictly append-only. Compensating entries (`WITHDRAWAL_REFUND`) reverse rejected or cancelled withdrawals.
+

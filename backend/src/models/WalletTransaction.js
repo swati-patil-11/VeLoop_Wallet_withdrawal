@@ -108,3 +108,4 @@ walletTransactionSchema.index(
 
 const WalletTransaction = mongoose.model('WalletTransaction', walletTransactionSchema);
 module.exports = WalletTransaction;
+

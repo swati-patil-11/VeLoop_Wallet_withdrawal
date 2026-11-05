@@ -12,3 +12,4 @@ Backend service providing atomic wallet management, double-entry immutable ledge
 - Helmet, Rate Limiting, Mongo Sanitize
 
 See main repository [README.md](../README.md) for full documentation, testing, and deployment instructions.
+

@@ -41,3 +41,4 @@ idempotencyRecordSchema.index({ userId: 1, key: 1, endpoint: 1 }, { unique: true
 
 const IdempotencyRecord = mongoose.model('IdempotencyRecord', idempotencyRecordSchema);
 module.exports = IdempotencyRecord;
+

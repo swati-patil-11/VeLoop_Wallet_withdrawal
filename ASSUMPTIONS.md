@@ -57,3 +57,4 @@ We evaluated two financial state management strategies:
   - User: `demo@veloop.test` / `DemoUser123!` (Seeded with 25,000 VEs, 5,000 SVEs, 100 Gems, 500 Tokens, 3 Spins + matching ledger history)
   - Secondary User: `demo2@veloop.test` / `DemoUser123!` (Used to verify multi-tenant isolation)
   - Admin: `admin@veloop.test` / `AdminPass123!`
+

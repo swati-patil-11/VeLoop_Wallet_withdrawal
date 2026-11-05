@@ -15,3 +15,4 @@ Base URL: `http://localhost:5000/api`
 
 ## Summary of Endpoints
 Detailed schemas, request/response bodies, error codes, and curl examples are documented in this file.
+
