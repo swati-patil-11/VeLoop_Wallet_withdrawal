@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// Robust URL normalization: handles trailing slashes and avoids double "/api/api"
+const rawBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').trim().replace(/\/+$/, '');
+const normalizedBaseUrl = rawBaseUrl.endsWith('/api') ? rawBaseUrl : `${rawBaseUrl}/api`;
 
 const client = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: normalizedBaseUrl,
   headers: {
     'Content-Type': 'application/json'
   }

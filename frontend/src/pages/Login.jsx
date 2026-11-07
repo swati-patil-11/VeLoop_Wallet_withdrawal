@@ -19,7 +19,16 @@ export default function Login() {
       await login(email, password);
       navigate('/wallet');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Check your credentials.');
+      if (!err.response) {
+        // Network failure / CORS failure / Backend offline
+        setError(
+          `Cannot reach API server (${client.defaults.baseURL}). Please check your VITE_API_BASE_URL setting and ensure your backend is running.`
+        );
+      } else if (err.response.status === 401) {
+        setError(err.response.data?.message || 'Invalid email or password.');
+      } else {
+        setError(err.response.data?.message || `Server error (HTTP ${err.response.status})`);
+      }
     } finally {
       setSubmitting(false);
     }
